@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Malaria || Drug Checker</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav class="navbar">
+      <div class="navbar-brand">TSC</div>
+    </nav>
+
+    <div class="container">
+      <h1>Malaria Symptoms Checker</h1>
+      <form id="symptomForm">
+        <div class="formItem">
+          <label for="fever">Fever:</label>
+          <input type="checkbox" id="fever" name="symptoms" value="Fever" />
+        </div>
+        <div class="formItem">
+          <label for="chills">Chills:</label>
+          <input type="checkbox" id="chills" name="symptoms" value="Chills" />
+        </div>
+        <div class="formItem">
+          <label for="headache">Headache:</label>
+          <input
+            type="checkbox"
+            id="headache"
+            name="symptoms"
+            value="Headache"
+          />
+        </div>
+        <div class="formItem">
+          <label for="nausea">Nausea:</label>
+          <input type="checkbox" id="nausea" name="symptoms" value="Nausea" />
+        </div>
+        <div class="formItem">
+          <label for="fatigue">Fatigue:</label>
+          <input type="checkbox" id="fatigue" name="symptoms" value="Fatigue" />
+        </div>
+        <button type="button" onclick="checkSymptoms()">Check Symptoms</button>
+      </form>
+      <h3>Recommended Drug:</h3>
+      <ul id="recommendedDrugs"></ul>
+    </div>
+    <script>
+      const drugs = [
+        {
+          name: "Drug A",
+          sideEffects: "Common side effects include nausea and headache.",
+          description: "Drug A is commonly prescribed to treat malaria.",
+          symptomsCombination: ["Fever", "Chills"],
+        },
+        {
+          name: "Drug B",
+          sideEffects: "Common side effects include dizziness and fatigue.",
+          description: "Drug B is another option for malaria treatment.",
+          symptomsCombination: ["Fever", "Chills", "Nausea"],
+        },
+        {
+          name: "Drug C",
+          sideEffects: "Common side effects include upset stomach.",
+          description: "Drug C is a less common choice for malaria treatment.",
+          symptomsCombination: ["Fever", "Headache"],
+        },
+      ];
+
+      function checkSymptoms() {
+        const selectedSymptoms = Array.from(
+          document.querySelectorAll('input[name="symptoms"]:checked')
+        ).map((input) => input.value);
+        const recommendedDrugs = document.getElementById("recommendedDrugs");
+
+        recommendedDrugs.innerHTML = "";
+
+        if (selectedSymptoms.length === 0) {
+          recommendedDrugs.innerHTML = "No symptoms selected.";
+          return;
+        }
+
+        let bestMatch = null;
+        let maxMatchCount = 0;
+
+        for (const drug of drugs) {
+          const symptomMatchCount = drug.symptomsCombination.filter((symptom) =>
+            selectedSymptoms.includes(symptom)
+          ).length;
+          if (symptomMatchCount > maxMatchCount) {
+            bestMatch = drug;
+            maxMatchCount = symptomMatchCount;
+          }
+        }
+
+        if (bestMatch) {
+          const listItem = document.createElement("li");
+          listItem.innerHTML = `<strong>${bestMatch.name}</strong>: ${bestMatch.description}<br>${bestMatch.sideEffects}`;
+          recommendedDrugs.appendChild(listItem);
+        } else {
+          recommendedDrugs.innerHTML = "No matching drugs found.";
+        }
+      }
+
+      // Attach an event listener to the "Check Symptoms" button
+      document
+        .getElementById("symptomForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          checkSymptoms();
+        });
+    </script>
+  </body>
+</html>
